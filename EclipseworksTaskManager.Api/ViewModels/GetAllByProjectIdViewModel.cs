@@ -4,6 +4,7 @@ namespace EclipseworksTaskManager.Api.ViewModels
 {
     public class GetAllByProjectIdViewModel
     {
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string DueDate { get; set; }
@@ -14,6 +15,7 @@ namespace EclipseworksTaskManager.Api.ViewModels
 
         public GetAllByProjectIdViewModel(Job job)
         {
+            Id = job.Id;
             Title = job.Title;
             Description = job.Description;
             DueDate = job.DueDate.ToString("dd/MM/yyyy HH:mm:ss");
