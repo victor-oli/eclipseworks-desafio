@@ -10,7 +10,7 @@ namespace EclipseworksTaskManager.Domain.Services
 
         public JobCommentService(IUnitOfWork unitOfWork)
         {
-            UnitOfWork = unitOfWork;
+            UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task AddAsync(JobEvent jobEvent)
