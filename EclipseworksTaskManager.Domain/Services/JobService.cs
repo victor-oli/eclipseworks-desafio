@@ -11,6 +11,8 @@ namespace EclipseworksTaskManager.Domain.Services
         public IUnitOfWork UnitOfWork { get; set; }
         public IUserService UserService { get; set; }
 
+        public const string JOB_OF_LIMIT_EXCEPTION_MESSAGE = "Currently a project cannot have more than twenty jobs. Please consider this.";
+
         public JobService(IUnitOfWork unitOfWork, IUserService userService)
         {
             UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -24,7 +26,7 @@ namespace EclipseworksTaskManager.Domain.Services
                 .Result;
 
             if (count > 19)
-                throw new JobsOffLimitException("Currently a project cannot have more than twenty jobs. Please consider this.");
+                throw new JobsOffLimitException(JOB_OF_LIMIT_EXCEPTION_MESSAGE);
 
             job.DueDate = DateTime.Now;
             job.IsEnabled = true;
@@ -36,7 +38,7 @@ namespace EclipseworksTaskManager.Domain.Services
                 .SaveChangesAsync();
         }
 
-        public async Task Delete(Guid jobId)
+        public async Task DeleteAsync(Guid jobId)
         {
             UnitOfWork.JobRepository
                 .Delete(new Job { Id = jobId });
@@ -44,7 +46,7 @@ namespace EclipseworksTaskManager.Domain.Services
             await UnitOfWork.SaveChangesAsync();
         }
 
-        public async Task Update(Job job)
+        public async Task UpdateAsync(Job job)
         {
             var originalJob = UnitOfWork.JobRepository
                 .GetByIdAsync(job.Id).Result;
@@ -60,16 +62,15 @@ namespace EclipseworksTaskManager.Domain.Services
             {
                 CreationDate = DateTime.Now,
                 Description = $"The Job {originalJob.Title} has changed from {originalJobToLog} to {JsonConvert.SerializeObject(originalJob)}.",
-                UserName = UserService.Get(),
                 JobId = originalJob.Id
             });
 
             await UnitOfWork.SaveChangesAsync();
         }
 
-        public Task<IList<Job>> GetAllByProjectNameAsync(string projectName)
+        public async Task<IList<Job>> GetAllByProjectNameAsync(string projectName)
         {
-            return UnitOfWork.JobRepository
+            return await UnitOfWork.JobRepository
                 .GetAllByProjectNameAsync(projectName);
         }
     }
