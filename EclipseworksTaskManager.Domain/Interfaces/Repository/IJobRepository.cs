@@ -7,7 +7,6 @@ namespace EclipseworksTaskManager.Domain.Interfaces.Repository
         Task<Job> GetByIdAsync(Guid id);
         Task<IList<Job>> GetAllByProjectNameAsync(string projectName);
         Task AddAsync(Job job);
-        Task Update(Job job);
         void Delete(Job job);
         Task<int> GetCountByProjectId(Guid projectId);
     }
