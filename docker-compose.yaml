@@ -1,0 +1,40 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+#networks:
+#  dev:
+#    driver: bridge
+
+services:
+  my-app:
+    image: docker.io/library/taskmanager-api05
+    depends_on:
+      - "app_db"
+    container_name: app_api
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DBHOST=app_db
+    networks:
+     - dev
+
+  app_db:
+    image: postgres
+    container_name: app_db
+    restart: always
+    environment:
+      - POSTGRES_USER=victor
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=mae
+    ports:
+      - '5433:5432'
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    #networks:
+    #  - dev
+volumes:
+  app_data:
