@@ -31,7 +31,8 @@ namespace EclipseworksTaskManager.Infra.Repositories
 
         public void Delete(Job job)
         {
-            throw new NotImplementedException();
+            Context.Jobs
+                .Remove(job);
         }
 
         public async Task<Job> GetByIdAsync(Guid id)

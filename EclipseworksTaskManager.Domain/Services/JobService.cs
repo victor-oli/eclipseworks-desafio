@@ -36,9 +36,12 @@ namespace EclipseworksTaskManager.Domain.Services
                 .SaveChangesAsync();
         }
 
-        public void Delete(Job job)
+        public async Task Delete(Guid jobId)
         {
-            throw new NotImplementedException();
+            UnitOfWork.JobRepository
+                .Delete(new Job { Id = jobId });
+
+            await UnitOfWork.SaveChangesAsync();
         }
 
         public async Task Update(Job job)
@@ -52,8 +55,6 @@ namespace EclipseworksTaskManager.Domain.Services
             originalJob.Status = job.Status;
             originalJob.IsEnabled = job.IsEnabled;
             originalJob.Title = job.Title;
-
-            await UnitOfWork.JobRepository.Update(originalJob);
 
             await UnitOfWork.JobEventRepository.AddAsync(new JobEvent
             {

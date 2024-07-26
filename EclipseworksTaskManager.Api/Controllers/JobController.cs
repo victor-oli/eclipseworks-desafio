@@ -49,5 +49,12 @@ namespace EclipseworksTaskManager.Api.Controllers
             await JobCommentService
                 .AddAsync(viewModel.GetEvent(jobId));
         }
+
+        [HttpDelete("{jobId}")]
+        public async Task Delete(Guid jobId)
+        {
+            await JobService
+                .Delete(jobId);
+        }
     }
 }

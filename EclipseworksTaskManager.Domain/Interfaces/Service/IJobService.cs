@@ -6,7 +6,7 @@ namespace EclipseworksTaskManager.Domain.Interfaces.Service
     {
         Task AddAsync(Job job);
         Task Update(Job job);
-        void Delete(Job job);
+        Task Delete(Guid jobId);
         Task<IList<Job>> GetAllByProjectNameAsync(string projectName);
     }
 }
