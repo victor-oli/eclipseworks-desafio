@@ -40,7 +40,7 @@ namespace EclipseworksTaskManager.Api.Controllers
         public async Task Update(UpdateJobViewModel viewModel)
         {
             await JobService
-                .Update(viewModel.GetJob());
+                .UpdateAsync(viewModel.GetJob());
         }
 
         [HttpPost("{jobId}/comment")]
@@ -54,7 +54,7 @@ namespace EclipseworksTaskManager.Api.Controllers
         public async Task Delete(Guid jobId)
         {
             await JobService
-                .Delete(jobId);
+                .DeleteAsync(jobId);
         }
     }
 }
