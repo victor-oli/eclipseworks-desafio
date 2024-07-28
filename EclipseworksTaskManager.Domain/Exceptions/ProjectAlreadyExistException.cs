@@ -1,6 +1,6 @@
 ﻿namespace EclipseworksTaskManager.Domain.Exceptions
 {
-    public class ProjectAlreadyExistException : Exception
+    public class ProjectAlreadyExistException : EtmBaseException
     {
         public ProjectAlreadyExistException(string message) : base(message) { }
     }

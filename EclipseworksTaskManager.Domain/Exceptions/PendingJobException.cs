@@ -1,6 +1,6 @@
 ﻿namespace EclipseworksTaskManager.Domain.Exceptions
 {
-    public class PendingJobException : Exception
+    public class PendingJobException : EtmBaseException
     {
         public PendingJobException(string message) : base(message) { }
     }

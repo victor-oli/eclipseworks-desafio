@@ -22,5 +22,14 @@
                 Result = result
             };
         }
+
+        public static BaseRespose<T> GetFailure(string message)
+        {
+            return new BaseRespose<T>
+            {
+                Success = false,
+                Message = message
+            };
+        }
     }
 }

@@ -1,3 +1,4 @@
+using EclipseworksTaskManager.Api.Middlewares;
 using EclipseworksTaskManager.Domain.Interfaces;
 using EclipseworksTaskManager.Domain.Interfaces.Repository;
 using EclipseworksTaskManager.Domain.Interfaces.Service;
@@ -6,7 +7,6 @@ using EclipseworksTaskManager.Infra;
 using EclipseworksTaskManager.Infra.EntityConfig;
 using EclipseworksTaskManager.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,5 +49,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseExceptionMiddleware();
 
 app.Run();
