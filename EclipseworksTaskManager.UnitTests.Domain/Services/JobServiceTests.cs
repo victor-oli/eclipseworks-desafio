@@ -1,6 +1,5 @@
 ﻿using AutoFixture.Idioms;
 using EclipseworksTaskManager.Domain.Entities;
-using EclipseworksTaskManager.Domain.Enums;
 using EclipseworksTaskManager.Domain.Exceptions;
 using EclipseworksTaskManager.Domain.Services;
 using EclipseworksTaskManager.UnitTests.Domain.AutoFixture;

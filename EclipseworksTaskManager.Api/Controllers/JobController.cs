@@ -1,4 +1,5 @@
 ﻿using EclipseworksTaskManager.Api.ViewModels;
+using EclipseworksTaskManager.Domain.Entities;
 using EclipseworksTaskManager.Domain.Interfaces.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,13 +21,15 @@ namespace EclipseworksTaskManager.Api.Controllers
         }
 
         [HttpGet("{projectName}/all")]
-        public async Task<List<GetAllByProjectIdViewModel>> GetAllByProjectId(string projectName)
+        public async Task<BaseRespose<List<GetAllByProjectIdViewModel>>> GetAllByProjectId(string projectName)
         {
             var dbResult = await JobService.GetAllByProjectNameAsync(projectName);
 
-            return dbResult
+            var jobs = dbResult
                 .Select(x => new GetAllByProjectIdViewModel(x))
                 .ToList();
+
+            return BaseRespose<List<GetAllByProjectIdViewModel>>.GetSuccess(jobs);
         }
 
         [HttpPost]
@@ -34,6 +37,9 @@ namespace EclipseworksTaskManager.Api.Controllers
         {
             await JobService
                 .AddAsync(viewModel.GetJob());
+
+            BaseRespose<object>
+                .GetSuccess();
         }
 
         [HttpPut]
@@ -41,6 +47,9 @@ namespace EclipseworksTaskManager.Api.Controllers
         {
             await JobService
                 .UpdateAsync(viewModel.GetJob());
+
+            BaseRespose<object>
+                .GetSuccess();
         }
 
         [HttpPost("{jobId}/comment")]
@@ -48,6 +57,9 @@ namespace EclipseworksTaskManager.Api.Controllers
         {
             await JobCommentService
                 .AddAsync(viewModel.GetEvent(jobId));
+
+            BaseRespose<object>
+                .GetSuccess();
         }
 
         [HttpDelete("{jobId}")]
@@ -55,6 +67,9 @@ namespace EclipseworksTaskManager.Api.Controllers
         {
             await JobService
                 .DeleteAsync(jobId);
+
+            BaseRespose<object>
+                .GetSuccess();
         }
     }
 }

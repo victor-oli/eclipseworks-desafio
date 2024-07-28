@@ -6,6 +6,7 @@ using EclipseworksTaskManager.Infra;
 using EclipseworksTaskManager.Infra.EntityConfig;
 using EclipseworksTaskManager.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,7 @@ builder.Services.AddTransient<IJobRepository, JobRepository>();
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
 builder.Services.AddTransient<IJobEventRepository, JobEventRepository>();
 
-builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IJobService, JobService>();
 builder.Services.AddTransient<IProjectService, ProjectService>();
 builder.Services.AddTransient<IJobCommentService, JobCommentService>();

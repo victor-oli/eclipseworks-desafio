@@ -16,22 +16,17 @@ namespace EclipseworksTaskManager.Api.Controllers
         }
 
         [HttpGet("{userName}")]
-        public async Task<List<GetAllProjectsByUserViewModel>> GetAllByUser(string userName)
+        public async Task<BaseRespose<List<GetAllProjectsByUserViewModel>>> GetAllByUser(string userName)
         {
-            try
-            {
-                var projects = await ProjectService
-                    .GetAllByUserAsync(userName);
+            var projects = await ProjectService
+                .GetAllByUserAsync(userName);
 
-                return projects
-                    .Select(x => new GetAllProjectsByUserViewModel(x))
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
+            var result = projects
+                .Select(x => new GetAllProjectsByUserViewModel(x))
+                .ToList();
 
-                throw;
-            }
+            return BaseRespose<List<GetAllProjectsByUserViewModel>>
+                .GetSuccess(result);
         }
 
         [HttpPost]
@@ -39,6 +34,9 @@ namespace EclipseworksTaskManager.Api.Controllers
         {
             await ProjectService
                 .AddAsync(viewModel.GetProject());
+
+            BaseRespose<object>
+                .GetSuccess();
         }
 
         [HttpDelete("{projectId}")]
@@ -46,6 +44,9 @@ namespace EclipseworksTaskManager.Api.Controllers
         {
             await ProjectService
                 .Delete(projectId);
+
+            BaseRespose<object>
+                .GetSuccess();
         }
     }
 }
