@@ -9,5 +9,6 @@ namespace EclipseworksTaskManager.Domain.Interfaces.Repository
         Task<bool> CheckForPendingJobs(Guid id);
         Task<List<Project>> GetAllByUserAsync(string userName);
         Task<Guid> CheckProjectExistence(string name);
+        Task<Project> GetByName(string name);
     }
 }

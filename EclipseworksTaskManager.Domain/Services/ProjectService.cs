@@ -9,19 +9,28 @@ namespace EclipseworksTaskManager.Domain.Services
     {
         public IUnitOfWork UnitOfWork { get; set; }
 
+        public const string PROJECT_ALREADY_EXIST_MESSAGE = "Already exist a project with this name. {0}";
+        public const string TWENTY_JOBS_LIMIT_MESSAGE = "Currently a project cannot have more than twenty jobs. Please consider this.";
+
         public ProjectService(IUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
-        public Task AddAsync(Project project)
+        public async Task AddAsync(Project project)
         {
             if (project.Jobs.Count > 20)
-                throw new JobsOffLimitException("Currently a project cannot have more than twenty jobs. Please consider this.");
+                throw new JobsOffLimitException(TWENTY_JOBS_LIMIT_MESSAGE);
 
-            UnitOfWork.ProjectRepository.AddAsync(project);
+            var projectWithSameName = await UnitOfWork.ProjectRepository
+                .GetByName(project.Name);
 
-            return UnitOfWork.SaveChangesAsync();
+            if (projectWithSameName != null)
+                throw new ProjectAlreadyExistException(string.Format(PROJECT_ALREADY_EXIST_MESSAGE, project.Name));
+
+            await UnitOfWork.ProjectRepository.AddAsync(project);
+
+            await UnitOfWork.SaveChangesAsync();
         }
 
         public async Task Delete(Guid id)
@@ -37,9 +46,9 @@ namespace EclipseworksTaskManager.Domain.Services
             await UnitOfWork.SaveChangesAsync();
         }
 
-        public Task<List<Project>> GetAllByUserAsync(string userName)
+        public async Task<List<Project>> GetAllByUserAsync(string userName)
         {
-            return UnitOfWork.ProjectRepository
+            return await UnitOfWork.ProjectRepository
                 .GetAllByUserAsync(userName);
         }
     }

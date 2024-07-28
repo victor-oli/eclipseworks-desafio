@@ -84,7 +84,7 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
             await addAsync
                 .Should()
                 .ThrowExactlyAsync<JobsOffLimitException>()
-                .WithMessage("Currently a project cannot have more than twenty jobs. Please consider this.");
+                .WithMessage(ProjectService.TWENTY_JOBS_LIMIT_MESSAGE);
 
             await sut.UnitOfWork.ProjectRepository
                 .DidNotReceive()
@@ -118,6 +118,37 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
 
             await sut.UnitOfWork
                 .Received(1)
+                .SaveChangesAsync();
+        }
+
+        [Theory, CustomAutoData]
+        public async Task AddAsync_WhenAlreadyExistAProjectWithSameName_ShouldThrowAnException(
+            Project project,
+            ProjectService sut)
+        {
+            project.Jobs.Clear();
+
+            sut.UnitOfWork.ProjectRepository
+                .GetByName(project.Name)
+                .Returns(new Project());
+
+            Func<Task> addAsync = async () => await sut.AddAsync(project);
+
+            await addAsync
+                .Should()
+                .ThrowExactlyAsync<ProjectAlreadyExistException>()
+                .WithMessage(string.Format(ProjectService.PROJECT_ALREADY_EXIST_MESSAGE, project.Name));
+
+            await sut.UnitOfWork.ProjectRepository
+                .DidNotReceive()
+                .AddAsync(project);
+
+            await sut.UnitOfWork.ProjectRepository
+                .Received(1)
+                .GetByName(project.Name);
+
+            await sut.UnitOfWork
+                .DidNotReceive()
                 .SaveChangesAsync();
         }
 

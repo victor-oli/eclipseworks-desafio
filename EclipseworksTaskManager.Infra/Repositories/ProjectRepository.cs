@@ -48,5 +48,11 @@ namespace EclipseworksTaskManager.Infra.Repositories
 
             return project.Id;
         }
+
+        public async Task<Project> GetByName(string name)
+        {
+            return await Context.Projects
+                .FirstOrDefaultAsync(x => x.Name == name);
+        }
     }
 }
