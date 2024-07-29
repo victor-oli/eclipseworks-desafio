@@ -10,13 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost
-    .UseKestrel()
-    .ConfigureKestrel(x =>
-    {
-        x.ListenAnyIP(80);
-    });
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -62,7 +55,7 @@ app.UseExceptionMiddleware();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<TaskManagerContext>();
-    
+
     context.Database.Migrate();
 }
 

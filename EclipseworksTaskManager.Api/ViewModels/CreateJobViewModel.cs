@@ -1,5 +1,6 @@
 ﻿using EclipseworksTaskManager.Domain.Entities;
 using EclipseworksTaskManager.Domain.Enums;
+using EclipseworksTaskManager.Domain.Exceptions;
 
 namespace EclipseworksTaskManager.Api.ViewModels
 {
@@ -7,19 +8,28 @@ namespace EclipseworksTaskManager.Api.ViewModels
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public JobStatusEnum Status { get; set; }
-        public PriorityEnum Priority { get; set; }
-        public Guid projectId { get; set; }
+        public string Status { get; set; }
+        public string Priority { get; set; }
+        public Guid ProjectId { get; set; }
+
+        public const string STATUS_INVALID_MESSAGE = "This status is invalid.";
+        public const string PRIORITY_INVALID_MESSAGE = "This priority is invalid.";
 
         public Job GetJob()
         {
+            if (!Enum.TryParse(typeof(JobStatusEnum), Status, out var parsedStatus) || !Enum.IsDefined(typeof(JobStatusEnum), parsedStatus))
+                throw new ContractVionationException(STATUS_INVALID_MESSAGE);
+
+            if (!Enum.TryParse(typeof(PriorityEnum), Priority, out var parsedPriority) || !Enum.IsDefined(typeof(PriorityEnum), parsedPriority))
+                throw new ContractVionationException(PRIORITY_INVALID_MESSAGE);
+
             return new Job
             {
                 Description = Description,
-                Priority = Priority,
-                Status = Status,
                 Title = Title,
-                ProjectId = projectId
+                ProjectId = ProjectId,
+                Status = (JobStatusEnum)parsedStatus,
+                Priority = (PriorityEnum)parsedPriority
             };
         }
     }

@@ -1,5 +1,4 @@
 ﻿using EclipseworksTaskManager.Api.ViewModels;
-using EclipseworksTaskManager.Domain.Entities;
 using EclipseworksTaskManager.Domain.Interfaces.Service;
 using Microsoft.AspNetCore.Mvc;
 
