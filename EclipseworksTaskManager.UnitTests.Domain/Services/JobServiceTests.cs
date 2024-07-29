@@ -268,6 +268,35 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
         }
 
         [Theory, CustomAutoData]
+        public async Task UpdateAsync_WhenJobNotExist_ShouldThrowException(
+            Job newJob,
+            JobService sut)
+        {
+            sut.UnitOfWork.JobRepository
+                .GetByIdAsync(newJob.Id)
+                .ReturnsNull();
+
+            Func<Task> updateAsync = async () => await sut.UpdateAsync(newJob);
+
+            await updateAsync
+                .Should()
+                .ThrowExactlyAsync<JobNotFoundException>()
+                .WithMessage(JobService.JOB_NOT_FOUND_MESSAGE);
+
+            await sut.UnitOfWork.JobRepository
+                .Received(1)
+                .GetByIdAsync(newJob.Id);
+
+            await sut.UnitOfWork.JobEventRepository
+                .DidNotReceive()
+                .AddAsync(Arg.Any<JobEvent>());
+
+            await sut.UnitOfWork
+                .DidNotReceive()
+                .SaveChangesAsync();
+        }
+
+        [Theory, CustomAutoData]
         public async Task GetAllByProjectNameAsync_ShouldReturnCorrectly(
             string projectName,
             List<Job> jobs,

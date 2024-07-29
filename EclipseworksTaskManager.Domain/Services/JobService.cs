@@ -15,6 +15,7 @@ namespace EclipseworksTaskManager.Domain.Services
         public const string JOB_OF_LIMIT_EXCEPTION_MESSAGE = "Currently a project cannot have more than twenty jobs. Please consider this.";
         public const string PROJECT_NOT_FOUND_MESSAGE = "Project not found.";
         public const string NULL_TITLE_MESSAGE = "Name property can not be null or empty.";
+        public const string JOB_NOT_FOUND_MESSAGE = "Job not found.";
 
         public JobService(IUnitOfWork unitOfWork, IUserService userService)
         {
@@ -59,8 +60,11 @@ namespace EclipseworksTaskManager.Domain.Services
 
         public async Task UpdateAsync(Job job)
         {
-            var originalJob = UnitOfWork.JobRepository
-                .GetByIdAsync(job.Id).Result;
+            var originalJob = await UnitOfWork.JobRepository
+                .GetByIdAsync(job.Id);
+
+            if (originalJob == null)
+                throw new JobNotFoundException(JOB_NOT_FOUND_MESSAGE);
 
             var originalJobToLog = JsonConvert.SerializeObject(originalJob);
 
