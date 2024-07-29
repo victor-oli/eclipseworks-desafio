@@ -1,4 +1,5 @@
 ﻿using EclipseworksTaskManager.Domain.Entities;
+using EclipseworksTaskManager.Domain.Enums;
 using EclipseworksTaskManager.Domain.Exceptions;
 using EclipseworksTaskManager.Domain.Interfaces;
 using EclipseworksTaskManager.Domain.Interfaces.Service;
@@ -12,6 +13,8 @@ namespace EclipseworksTaskManager.Domain.Services
         public IUserService UserService { get; set; }
 
         public const string JOB_OF_LIMIT_EXCEPTION_MESSAGE = "Currently a project cannot have more than twenty jobs. Please consider this.";
+        public const string PROJECT_NOT_FOUND_MESSAGE = "Project not found.";
+        public const string NULL_TITLE_MESSAGE = "Name property can not be null or empty.";
 
         public JobService(IUnitOfWork unitOfWork, IUserService userService)
         {
@@ -19,22 +22,30 @@ namespace EclipseworksTaskManager.Domain.Services
             UserService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public Task AddAsync(Job job)
+        public async Task AddAsync(Job job)
         {
-            var count = UnitOfWork.JobRepository
-                .GetCountByProjectId(job.ProjectId)
-                .Result;
+            if (string.IsNullOrWhiteSpace(job.Title))
+                throw new ContractVionationException(NULL_TITLE_MESSAGE);
+
+            var count = await UnitOfWork.JobRepository
+                .GetCountByProjectId(job.ProjectId);
 
             if (count > 19)
                 throw new JobsOffLimitException(JOB_OF_LIMIT_EXCEPTION_MESSAGE);
 
+            var project = await UnitOfWork.ProjectRepository
+                .GetByIdUntracked(job.ProjectId);
+
+            if (project == null)
+                throw new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE);
+
             job.DueDate = DateTime.Now;
             job.IsEnabled = true;
 
-            UnitOfWork.JobRepository
+            await UnitOfWork.JobRepository
                 .AddAsync(job);
 
-            return UnitOfWork
+            await UnitOfWork
                 .SaveChangesAsync();
         }
 

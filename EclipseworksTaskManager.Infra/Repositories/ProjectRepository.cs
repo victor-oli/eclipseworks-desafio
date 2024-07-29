@@ -54,5 +54,12 @@ namespace EclipseworksTaskManager.Infra.Repositories
             return await Context.Projects
                 .FirstOrDefaultAsync(x => x.Name == name);
         }
+
+        public async Task<Project> GetByIdUntracked(Guid id)
+        {
+            return await Context.Projects
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

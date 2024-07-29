@@ -10,5 +10,6 @@ namespace EclipseworksTaskManager.Domain.Interfaces.Repository
         Task<List<Project>> GetAllByUserAsync(string userName);
         Task<Guid> CheckProjectExistence(string name);
         Task<Project> GetByName(string name);
+        Task<Project> GetByIdUntracked(Guid id);
     }
 }

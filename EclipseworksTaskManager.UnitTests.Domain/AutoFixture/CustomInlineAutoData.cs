@@ -6,6 +6,6 @@ namespace EclipseworksTaskManager.UnitTests.Domain.AutoFixture
     public class CustomInlineAutoData : CompositeDataAttribute
     {
         public CustomInlineAutoData(params object[] values) : 
-            base(new InlineDataAttribute(), new CustomAutoDataAttribute()) { }
+            base(new InlineDataAttribute(values), new CustomAutoDataAttribute()) { }
     }
 }

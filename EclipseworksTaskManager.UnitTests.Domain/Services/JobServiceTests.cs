@@ -2,10 +2,12 @@
 using EclipseworksTaskManager.Domain.Entities;
 using EclipseworksTaskManager.Domain.Exceptions;
 using EclipseworksTaskManager.Domain.Services;
+using EclipseworksTaskManager.Infra;
 using EclipseworksTaskManager.UnitTests.Domain.AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using Xunit;
 
 namespace EclipseworksTaskManager.UnitTests.Domain.Services
@@ -56,6 +58,7 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
         [Theory, CustomAutoData]
         public async Task AddAsync_WhenProjectHasLessThanTwentyJobs_ShouldAddCorrectly(
             Job job,
+            Project project,
             JobService sut)
         {
             // arrange
@@ -65,6 +68,10 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
             sut.UnitOfWork.JobRepository
                 .GetCountByProjectId(job.ProjectId)
                 .Returns((short)10);
+
+            sut.UnitOfWork.ProjectRepository
+                .GetByIdUntracked(job.ProjectId)
+                .Returns(project);
 
             sut.UnitOfWork.JobRepository
                 .AddAsync(job)
@@ -90,12 +97,84 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
                 .Received(1)
                 .GetCountByProjectId(job.ProjectId);
 
+            await sut.UnitOfWork.ProjectRepository
+                .Received(1)
+                .GetByIdUntracked(job.ProjectId);
+
             await sut.UnitOfWork.JobRepository
                 .Received(1)
                 .AddAsync(job);
 
             await sut.UnitOfWork
                 .Received(1)
+                .SaveChangesAsync();
+        }
+
+        [Theory]
+        [CustomInlineAutoData(null)]
+        [CustomInlineAutoData("")]
+        [CustomInlineAutoData("   ")]
+        public async Task AddAsync_WhenTitleIsInvalid_ShouldThrowException(
+            string title,
+            Job job,
+            JobService sut)
+        {
+            job.Title = title;
+
+            Func<Task> addAsync = async () => await sut.AddAsync(job);
+
+            await addAsync
+                .Should()
+                .ThrowExactlyAsync<ContractVionationException>()
+                .WithMessage(JobService.NULL_TITLE_MESSAGE);
+
+            await sut.UnitOfWork.JobRepository
+                .DidNotReceive()
+                .GetCountByProjectId(Arg.Any<Guid>());
+            
+            await sut.UnitOfWork.ProjectRepository
+                .DidNotReceive()
+                .GetByIdUntracked(job.ProjectId);
+
+            await sut.UnitOfWork.JobRepository
+                .DidNotReceive()
+                .AddAsync(job);
+
+            await sut.UnitOfWork
+                .DidNotReceive()
+                .SaveChangesAsync();
+        }
+
+        [Theory, CustomAutoData]
+        public async Task AddAsync_WhenProjectDoesNotExist_ShouldThrowException(
+            Job job,
+            JobService sut)
+        {
+            sut.UnitOfWork.JobRepository
+                .GetCountByProjectId(job.ProjectId)
+                .Returns(7);
+
+            sut.UnitOfWork.JobRepository
+                .AddAsync(job)
+                .ReturnsNull();
+
+            Func<Task> addAsync = async () => await sut.AddAsync(job);
+
+            await addAsync
+                .Should()
+                .ThrowExactlyAsync<ProjectNotFoundException>()
+                .WithMessage(JobService.PROJECT_NOT_FOUND_MESSAGE);
+
+            await sut.UnitOfWork.JobRepository
+                .Received(1)
+                .GetCountByProjectId(job.ProjectId);
+
+            await sut.UnitOfWork.JobRepository
+                .DidNotReceive()
+                .AddAsync(job);
+
+            await sut.UnitOfWork
+                .DidNotReceive()
                 .SaveChangesAsync();
         }
 
