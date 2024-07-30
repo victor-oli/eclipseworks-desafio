@@ -11,6 +11,7 @@ namespace EclipseworksTaskManager.Domain.Services
 
         public const string PROJECT_ALREADY_EXIST_MESSAGE = "Already exist a project with this name. {0}";
         public const string TWENTY_JOBS_LIMIT_MESSAGE = "Currently a project cannot have more than twenty jobs. Please consider this.";
+        public const string INVALID_PROJECT_NAME_MESSAGE = "Name can not be null or empty.";
 
         public ProjectService(IUnitOfWork unitOfWork)
         {
@@ -19,6 +20,9 @@ namespace EclipseworksTaskManager.Domain.Services
 
         public async Task AddAsync(Project project)
         {
+            if(string.IsNullOrWhiteSpace(project.Name))
+                throw new ContractViolationException(INVALID_PROJECT_NAME_MESSAGE);
+
             if (project.Jobs.Count > 20)
                 throw new JobsOffLimitException(TWENTY_JOBS_LIMIT_MESSAGE);
 

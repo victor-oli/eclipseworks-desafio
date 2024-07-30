@@ -2,6 +2,7 @@
 using EclipseworksTaskManager.Domain.Entities;
 using EclipseworksTaskManager.Domain.Exceptions;
 using EclipseworksTaskManager.Domain.Services;
+using EclipseworksTaskManager.Infra;
 using EclipseworksTaskManager.UnitTests.Domain.AutoFixture;
 using FluentAssertions;
 using NSubstitute;
@@ -146,6 +147,37 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
             await sut.UnitOfWork.ProjectRepository
                 .Received(1)
                 .GetByName(project.Name);
+
+            await sut.UnitOfWork
+                .DidNotReceive()
+                .SaveChangesAsync();
+        }
+
+        [Theory]
+        [CustomInlineAutoData(null)]
+        [CustomInlineAutoData("")]
+        [CustomInlineAutoData("  ")]
+        public async Task AddAsync_WithInvalidName_ShouldThrowException(
+            string name,
+            Project project,
+            ProjectService sut)
+        {
+            project.Name = name;
+
+            Func<Task> addAsync = async () => await sut.AddAsync(project);
+
+            await addAsync
+                .Should()
+                .ThrowExactlyAsync<ContractViolationException>()
+                .WithMessage(ProjectService.INVALID_PROJECT_NAME_MESSAGE);
+
+            await sut.UnitOfWork.ProjectRepository
+                .DidNotReceive()
+                .GetByName(project.Name);
+
+            await sut.UnitOfWork.ProjectRepository
+                .DidNotReceive()
+                .AddAsync(project);
 
             await sut.UnitOfWork
                 .DidNotReceive()
