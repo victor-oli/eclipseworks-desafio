@@ -76,8 +76,13 @@ namespace EclipseworksTaskManager.Domain.Services
             await UnitOfWork.JobEventRepository.AddAsync(new JobEvent
             {
                 CreationDate = DateTime.Now,
-                Description = $"The Job {originalJob.Title} has changed from {originalJobToLog} to {JsonConvert.SerializeObject(originalJob)}.",
-                JobId = originalJob.Id
+                Description = JsonConvert.SerializeObject(new
+                {
+                    From = originalJobToLog,
+                    To = originalJob
+                }),
+                JobId = originalJob.Id,
+                UserName = UserService.Get()
             });
 
             await UnitOfWork.SaveChangesAsync();
