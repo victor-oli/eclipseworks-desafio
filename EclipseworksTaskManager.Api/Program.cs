@@ -41,6 +41,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IJobService, JobService>();
 builder.Services.AddTransient<IProjectService, ProjectService>();
 builder.Services.AddTransient<IJobCommentService, JobCommentService>();
+builder.Services.AddTransient<IReportService, ReportService>();
 
 var app = builder.Build();
 
