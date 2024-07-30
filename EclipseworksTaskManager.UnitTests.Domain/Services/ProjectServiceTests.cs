@@ -87,6 +87,10 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
                 .ThrowExactlyAsync<JobsOffLimitException>()
                 .WithMessage(ProjectService.TWENTY_JOBS_LIMIT_MESSAGE);
 
+            sut.UserService
+                .DidNotReceive()
+                .Get();
+
             await sut.UnitOfWork.ProjectRepository
                 .DidNotReceive()
                 .AddAsync(project);
@@ -98,10 +102,15 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
 
         [Theory, CustomAutoData]
         public async Task AddAsync_WhenProjctHaveLessThenTwentyJobs_ShouldAddCorrectly(
+            string userName,
             Project project,
             ProjectService sut)
         {
             project.Jobs.Clear();
+
+            sut.UserService
+                .Get()
+                .Returns(userName);
 
             sut.UnitOfWork.ProjectRepository
                 .AddAsync(project)
@@ -112,6 +121,14 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
                 .Returns(Task.CompletedTask);
 
             await sut.AddAsync(project);
+
+            sut.UserService
+                .Received(1)
+                .Get();
+
+            userName
+                .Should()
+                .Be(project.UserName);
 
             await sut.UnitOfWork.ProjectRepository
                 .Received(1)
@@ -139,6 +156,10 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
                 .Should()
                 .ThrowExactlyAsync<ProjectAlreadyExistException>()
                 .WithMessage(string.Format(ProjectService.PROJECT_ALREADY_EXIST_MESSAGE, project.Name));
+
+            sut.UserService
+                .DidNotReceive()
+                .Get();
 
             await sut.UnitOfWork.ProjectRepository
                 .DidNotReceive()
@@ -174,6 +195,10 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
             await sut.UnitOfWork.ProjectRepository
                 .DidNotReceive()
                 .GetByName(project.Name);
+
+            sut.UserService
+                .DidNotReceive()
+                .Get();
 
             await sut.UnitOfWork.ProjectRepository
                 .DidNotReceive()

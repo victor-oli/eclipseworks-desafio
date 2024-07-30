@@ -8,14 +8,16 @@ namespace EclipseworksTaskManager.Domain.Services
     public class ProjectService : IProjectService
     {
         public IUnitOfWork UnitOfWork { get; set; }
+        public IUserService UserService { get; set; }
 
         public const string PROJECT_ALREADY_EXIST_MESSAGE = "Already exist a project with this name. {0}";
         public const string TWENTY_JOBS_LIMIT_MESSAGE = "Currently a project cannot have more than twenty jobs. Please consider this.";
         public const string INVALID_PROJECT_NAME_MESSAGE = "Name can not be null or empty.";
 
-        public ProjectService(IUnitOfWork unitOfWork)
+        public ProjectService(IUnitOfWork unitOfWork, IUserService userService)
         {
             UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            UserService = userService ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task AddAsync(Project project)
@@ -31,6 +33,8 @@ namespace EclipseworksTaskManager.Domain.Services
 
             if (projectWithSameName != null)
                 throw new ProjectAlreadyExistException(string.Format(PROJECT_ALREADY_EXIST_MESSAGE, project.Name));
+
+            project.UserName = UserService.Get();
 
             await UnitOfWork.ProjectRepository.AddAsync(project);
 
