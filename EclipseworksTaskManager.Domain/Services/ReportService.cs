@@ -12,7 +12,7 @@ namespace EclipseworksTaskManager.Domain.Services
 
         public ReportService(IUnitOfWork unitOfWork)
         {
-            UnitOfWork = unitOfWork;
+            UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<List<DoneJobsByUser>> GetDoneJobsByUserInTheLastThirtyDays()
