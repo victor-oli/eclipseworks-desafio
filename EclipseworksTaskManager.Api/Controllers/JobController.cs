@@ -32,42 +32,42 @@ namespace EclipseworksTaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public async Task Create(CreateJobViewModel viewModel)
+        public async Task<BaseRespose<object>> Create(CreateJobViewModel viewModel)
         {
             await JobService
                 .AddAsync(viewModel.GetJob());
 
-            BaseRespose<object>
+            return BaseRespose<object>
                 .GetSuccess();
         }
 
         [HttpPut]
-        public async Task Update(UpdateJobViewModel viewModel)
+        public async Task<BaseRespose<object>> Update(UpdateJobViewModel viewModel)
         {
             await JobService
                 .UpdateAsync(viewModel.GetJob());
 
-            BaseRespose<object>
+            return BaseRespose<object>
                 .GetSuccess();
         }
 
         [HttpPost("{jobId}/comment")]
-        public async Task AddComment(Guid jobId, AddCommentViewModel viewModel)
+        public async Task<BaseRespose<object>> AddComment(Guid jobId, AddCommentViewModel viewModel)
         {
             await JobCommentService
                 .AddAsync(viewModel.GetEvent(jobId));
 
-            BaseRespose<object>
+            return BaseRespose<object>
                 .GetSuccess();
         }
 
         [HttpDelete("{jobId}")]
-        public async Task Delete(Guid jobId)
+        public async Task<BaseRespose<object>> Delete(Guid jobId)
         {
             await JobService
                 .DeleteAsync(jobId);
 
-            BaseRespose<object>
+            return BaseRespose<object>
                 .GetSuccess();
         }
     }

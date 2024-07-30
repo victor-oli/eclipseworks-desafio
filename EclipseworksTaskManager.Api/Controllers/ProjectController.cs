@@ -30,22 +30,22 @@ namespace EclipseworksTaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public async Task Create(CreateProjectViewModel viewModel)
+        public async Task<BaseRespose<object>> Create(CreateProjectViewModel viewModel)
         {
             await ProjectService
                 .AddAsync(viewModel.GetProject());
 
-            BaseRespose<object>
+            return BaseRespose<object>
                 .GetSuccess();
         }
 
         [HttpDelete("{projectId}")]
-        public async Task Delete(Guid projectId)
+        public async Task<BaseRespose<object>> Delete(Guid projectId)
         {
             await ProjectService
                 .Delete(projectId);
 
-            BaseRespose<object>
+            return BaseRespose<object>
                 .GetSuccess();
         }
     }

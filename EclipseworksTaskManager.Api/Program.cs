@@ -56,7 +56,11 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<TaskManagerContext>();
 
-    context.Database.Migrate();
+    try
+    {
+        context.Database.Migrate();
+    }
+    catch (Exception) { }
 }
 
 app.Run();
