@@ -125,7 +125,7 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
 
             await addAsync
                 .Should()
-                .ThrowExactlyAsync<ContractVionationException>()
+                .ThrowExactlyAsync<ContractViolationException>()
                 .WithMessage(JobService.NULL_TITLE_MESSAGE);
 
             await sut.UnitOfWork.JobRepository

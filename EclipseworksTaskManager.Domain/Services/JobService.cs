@@ -26,7 +26,7 @@ namespace EclipseworksTaskManager.Domain.Services
         public async Task AddAsync(Job job)
         {
             if (string.IsNullOrWhiteSpace(job.Title))
-                throw new ContractVionationException(NULL_TITLE_MESSAGE);
+                throw new ContractViolationException(NULL_TITLE_MESSAGE);
 
             var count = await UnitOfWork.JobRepository
                 .GetCountByProjectId(job.ProjectId);
