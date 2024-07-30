@@ -59,11 +59,17 @@ app.UseExceptionMiddleware();
 
 app.UseWhen(context => (
         context.Request.Method == "PUT" ||
-        context.Request.Path.StartsWithSegments("/api/job/{jobId}/comment")
+        context.Request.Path.Value.Contains("/comment") ||
+        context.Request.Path.StartsWithSegments("/api/report")
     ), appBuilder =>
     {
         appBuilder.UseUserMiddleware();
     });
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/report"), appBuilder =>
+{
+    appBuilder.UseMiddleware<AuthorizationMiddleware>();
+});
 
 using (var scope = app.Services.CreateScope())
 {
