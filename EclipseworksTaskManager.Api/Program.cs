@@ -1,3 +1,4 @@
+using EclipseworksTaskManager.Api.Filters;
 using EclipseworksTaskManager.Api.Middlewares;
 using EclipseworksTaskManager.Domain.Interfaces;
 using EclipseworksTaskManager.Domain.Interfaces.Repository;
@@ -16,7 +17,10 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(x =>
+{
+    x.OperationFilter<AddCustomheaderParameter>();
+});
 
 //builder.Services.AddDbContext<TaskManagerContext>(x =>
 //    x.UseInMemoryDatabase("TaskManager"));
@@ -51,6 +55,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseExceptionMiddleware();
+
+app.UseWhen(context => (
+        context.Request.Method == "PUT" ||
+        context.Request.Path.StartsWithSegments("/api/job/{jobId}/comment")
+    ), appBuilder =>
+    {
+        appBuilder.UseUserMiddleware();
+    });
 
 using (var scope = app.Services.CreateScope())
 {
