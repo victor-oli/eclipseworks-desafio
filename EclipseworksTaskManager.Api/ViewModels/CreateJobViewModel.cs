@@ -18,10 +18,10 @@ namespace EclipseworksTaskManager.Api.ViewModels
         public Job GetJob()
         {
             if (!Enum.TryParse(typeof(JobStatusEnum), Status, out var parsedStatus) || !Enum.IsDefined(typeof(JobStatusEnum), parsedStatus))
-                throw new ContractVionationException(STATUS_INVALID_MESSAGE);
+                throw new ContractViolationException(STATUS_INVALID_MESSAGE);
 
             if (!Enum.TryParse(typeof(PriorityEnum), Priority, out var parsedPriority) || !Enum.IsDefined(typeof(PriorityEnum), parsedPriority))
-                throw new ContractVionationException(PRIORITY_INVALID_MESSAGE);
+                throw new ContractViolationException(PRIORITY_INVALID_MESSAGE);
 
             return new Job
             {
