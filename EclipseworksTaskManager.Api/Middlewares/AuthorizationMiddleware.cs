@@ -15,7 +15,7 @@ namespace EclipseworksTaskManager.Api.Middlewares
         {
             context.Request.Headers.TryGetValue("User", out StringValues value);
 
-            if (value[0] != "Admin")
+            if (value[0] != "admin")
             {
                 WriteResponse(context);
 
