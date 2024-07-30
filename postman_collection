@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "abe68659-cb6e-4aed-b77a-68bfe960fb0a",
+		"name": "EclipseWorks-Desafio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32638933"
+	},
+	"item": [
+		{
+			"name": "Cadastrar Projeto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\": \"Projeto Um\",\r\n    \"UserName\": \"victor\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/Project"
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar Projetos por Username",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5000/api/Project/victor"
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar Projeto",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:5000/api/Project/284533ba-0d0a-4783-8119-a606a49b2481"
+			},
+			"response": []
+		},
+		{
+			"name": "Cadastrar Tarefa",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Title\": \"Tarefa Um\",\r\n    \"Description\": \"teste\",\r\n    \"Status\": \"0\",\r\n    \"Priority\": \"0\",\r\n    \"ProjectId\": \"284533ba-0d0a-4783-8119-a606a49b2481\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/Job"
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar Tarefas por Projeto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5000/api/Job/Projeto Um/all"
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Tarefa",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "User",
+						"value": "victor",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"df3ef71b-2935-4fbf-a78a-db98cfff8104\",\r\n  \"title\": \"Tarefa Um editada\",\r\n  \"description\": \"teste 2\",\r\n  \"status\": \"2\",\r\n  \"isEnabled\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/Job"
+			},
+			"response": []
+		},
+		{
+			"name": "Adicionar Comentário",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "User",
+						"value": "victor",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"comment\": \"tarefa com bloqueio\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/Job/df3ef71b-2935-4fbf-a78a-db98cfff8104/comment"
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar Tarefa",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:5000/api/Job/742a710d-49eb-47d9-a627-f482cf8855ec"
+			},
+			"response": []
+		},
+		{
+			"name": "Relatório de Tarefas por Usuário 30 dias",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "User",
+						"value": "admin",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:5000/api/Report/DoneJobs"
+			},
+			"response": []
+		}
+	]
+}
