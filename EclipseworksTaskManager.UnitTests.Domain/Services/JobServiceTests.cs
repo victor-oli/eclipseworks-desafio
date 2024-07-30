@@ -215,6 +215,22 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
                 .GetByIdAsync(newJob.Id)
                 .Returns(originalJob);
 
+            var before = new
+            {
+                originalJob.Description,
+                originalJob.Status,
+                originalJob.IsEnabled,
+                originalJob.Title
+            };
+
+            var after = new
+            {
+                newJob.Description,
+                newJob.Status,
+                newJob.IsEnabled,
+                newJob.Title
+            };
+
             sut.UnitOfWork.JobEventRepository
                 .AddAsync(Arg.Do<JobEvent>(x =>
                 {
@@ -224,7 +240,11 @@ namespace EclipseworksTaskManager.UnitTests.Domain.Services
 
                     x.Description
                     .Should()
-                    .Be($"The Job {originalJob.Title} has changed from {originalJobToLog} to {JsonConvert.SerializeObject(originalJob)}.");
+                    .Be(JsonConvert.SerializeObject(new
+                    {
+                        Before = before,
+                        After = after
+                    }));
 
                     x.JobId
                     .Should()
