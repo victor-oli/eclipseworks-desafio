@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EclipseworksTaskManager.Api.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
     public class JobController : ControllerBase
     {
         public IJobService JobService { get; set; }

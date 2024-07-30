@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EclipseworksTaskManager.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ProjectController : ControllerBase
     {
