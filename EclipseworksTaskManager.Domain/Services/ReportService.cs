@@ -1,4 +1,5 @@
-﻿using EclipseworksTaskManager.Domain.Interfaces;
+﻿using EclipseworksTaskManager.Domain.Enums;
+using EclipseworksTaskManager.Domain.Interfaces;
 using EclipseworksTaskManager.Domain.Interfaces.Service;
 using EclipseworksTaskManager.Domain.ValueObjects;
 using Newtonsoft.Json;
@@ -50,9 +51,16 @@ namespace EclipseworksTaskManager.Domain.Services
 
         private bool CheckIfIsDoneJob(string description)
         {
-            return JsonConvert
-                .DeserializeObject<dynamic>(description)
-                .To.Status == 2;
+            try
+            {
+                var fromToJobUpdate = JsonConvert
+                .DeserializeObject<BeforeAfterJobUpdate>(description);
+
+                return fromToJobUpdate?.After.Status == JobStatusEnum.Done;
+            }
+            catch (Exception) { }
+
+            return false;
         }
     }
 }

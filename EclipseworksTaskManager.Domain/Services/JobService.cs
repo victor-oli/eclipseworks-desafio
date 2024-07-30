@@ -3,6 +3,7 @@ using EclipseworksTaskManager.Domain.Enums;
 using EclipseworksTaskManager.Domain.Exceptions;
 using EclipseworksTaskManager.Domain.Interfaces;
 using EclipseworksTaskManager.Domain.Interfaces.Service;
+using EclipseworksTaskManager.Domain.ValueObjects;
 using Newtonsoft.Json;
 
 namespace EclipseworksTaskManager.Domain.Services
@@ -66,20 +67,34 @@ namespace EclipseworksTaskManager.Domain.Services
             if (originalJob == null)
                 throw new JobNotFoundException(JOB_NOT_FOUND_MESSAGE);
 
-            var originalJobToLog = JsonConvert.SerializeObject(originalJob);
+            var before = new
+            {
+                originalJob.Description,
+                originalJob.Status,
+                originalJob.IsEnabled,
+                originalJob.Title
+            };
 
             originalJob.Description = job.Description;
             originalJob.Status = job.Status;
             originalJob.IsEnabled = job.IsEnabled;
             originalJob.Title = job.Title;
 
+            var after = new
+            {
+                originalJob.Description,
+                originalJob.Status,
+                originalJob.IsEnabled,
+                originalJob.Title
+            };
+
             await UnitOfWork.JobEventRepository.AddAsync(new JobEvent
             {
                 CreationDate = DateTime.Now,
                 Description = JsonConvert.SerializeObject(new
                 {
-                    From = originalJobToLog,
-                    To = originalJob
+                    Before = before,
+                    After = after
                 }),
                 JobId = originalJob.Id,
                 UserName = UserService.Get()
